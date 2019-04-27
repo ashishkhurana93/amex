@@ -1,0 +1,132 @@
+#Setting Working Directory
+setwd ("C:/Users/ASHISH/Documents/IIFT Trimester-4/Amex/Final")
+
+#Loading Dataset
+train <- read.csv ("Training_Dataset.csv")
+leaderboard <- read.csv ("Leaderboard_Dataset.csv")
+final <- read.csv ("Final_Dataset.csv")
+
+#Checking Dimension and Other Feature of Train Data
+names (train)
+nrow (train)
+ncol (train)
+head (train)
+tail (train)
+
+#Splitting Data into Supplementary,Elite and Credit
+
+train_supp<-train[train$mvar46==1,]
+train_elite<-train[train$mvar47==1,]
+train_credit<-train[train$mvar48==1,]
+
+#Modeling for Training Supplementary Dataset
+train_supp$Accept<-train_supp$mvar49
+train_supp$Accept<-as.factor (train_supp$Accept)
+
+
+summary (as.factor (train_supp$Accept))
+str(train_supp)
+
+#Modeling using Logistic Regression
+model <- glm (Accept ~mvar2+mvar3+mvar4+mvar5+mvar6+mvar7+mvar8+mvar9+mvar10+mvar11+mvar12+mvar13+mvar14+mvar15+mvar16+mvar17+mvar18+mvar19+mvar20+mvar21+mvar22+mvar23+mvar24+mvar25+mvar26+mvar27+mvar28+mvar29+mvar30+mvar31+mvar32+mvar33+mvar34+mvar35+mvar36+mvar37+mvar38+mvar39 , data=train_supp, family=binomial())
+summary(model)
+
+#Deviance Table for Supplementary
+train_supp$PredProb <- predict (model, train_supp, type="response")
+train_supp$Rank <- rank (-train_supp$PredProb, ties.method="random")
+obs <- nrow (train_supp)
+train_supp$Group <- ceiling (as.numeric(train_supp$Rank) * 10/obs)
+
+write.csv (train_supp, "Training Output/Supp_train.csv")
+#Deciling Calculation in Excel
+
+#Predicitions for Supplementary Card Holders(Leaderboard Data)
+test$PredProb <- predict (model, test, type="response")
+test$Rank <- rank (-test$PredProb, ties.method="random")
+obs <- nrow (test)
+
+test$Group <- ceiling (as.numeric(test$Rank) * 10/obs)
+write.csv (test, "Leaderboard Output/Supp_test.csv")
+
+
+#Predicitions for Final Card Holders(Final Data)
+final$PredProb <- predict (model, final, type="response")
+final$Rank <- rank (-final$PredProb, ties.method="random")
+obs <- nrow (final)
+
+final$Group <- ceiling (as.numeric(final$Rank) * 10/obs)
+write.csv (final, "Final Output/Supp_final.csv")
+
+#Supplementary Logistic Regression Modelling End
+
+#Modeling for Training Elite Dataset--------------------------------
+train_elite$Accept<-train_elite$mvar50
+train_elite$Accept<-as.factor (train_elite$Accept)
+
+
+summary (as.factor (train_elite$Accept))
+str(train_elite)
+
+#Modeling using Logistic Regression
+model <- glm (Accept ~mvar2+mvar3+mvar4+mvar5+mvar6+mvar7+mvar8+mvar9+mvar10+mvar11+mvar12+mvar13+mvar14+mvar15+mvar16+mvar17+mvar18+mvar19+mvar20+mvar21+mvar22+mvar23+mvar24+mvar25+mvar26+mvar27+mvar28+mvar29+mvar30+mvar31+mvar32+mvar33+mvar34+mvar35+mvar36+mvar37+mvar38+mvar39 , data=train_elite, family=binomial())
+summary(model)
+
+#Deviance Table for Elite
+train_elite$PredProb <- predict (model, train_elite, type="response")
+train_elite$Rank <- rank (-train_elite$PredProb, ties.method="random")
+obs <- nrow (train_elite)
+train_elite$Group <- ceiling (as.numeric(train_elite$Rank) * 10/obs)
+
+write.csv (train_elite, "Training Output/Elite_train.csv")
+
+#Deciling Calculation in Excel
+#Predicitions for Elite Card Holders(Leaderboard Data)
+test$PredProb <- predict (model, test, type="response")
+test$Rank <- rank (-test$PredProb, ties.method="random")
+obs <- nrow (test)
+
+test$Group <- ceiling (as.numeric(test$Rank) * 10/obs)
+write.csv (test, "Leaderboard Output/Elite_test.csv")
+
+
+#Predicitions for Final Card Holders(Final Data)
+final$PredProb <- predict (model, final, type="response")
+final$Rank <- rank (-final$PredProb, ties.method="random")
+obs <- nrow (final)
+
+final$Group <- ceiling (as.numeric(final$Rank) * 10/obs)
+write.csv (final, "Final Output/Elite_final.csv")
+
+#Elite Logistic Modeling End-------------------------------------------------
+
+#Credit Modeling Start
+
+train_credit$Accept<-train_credit$mvar51
+train_credit$Accept<-as.factor (train_credit$Accept)
+
+
+summary (as.factor (train_credit$Accept))
+str(train_credit)
+
+#Modeling using Logistic Regression
+model <- glm (Accept ~mvar2+mvar3+mvar4+mvar5+mvar6+mvar7+mvar8+mvar9+mvar10+mvar11+mvar12+mvar13+mvar14+mvar15+mvar16+mvar17+mvar18+mvar19+mvar20+mvar21+mvar22+mvar23+mvar24+mvar25+mvar26+mvar27+mvar28+mvar29+mvar30+mvar31+mvar32+mvar33+mvar34+mvar35+mvar36+mvar37+mvar38+mvar39 , data=train_credit, family=binomial())
+summary(model)
+
+#Deviance Table for Credit
+train_credit$PredProb <- predict (model, train_credit, type="response")
+train_credit$Rank <- rank (-train_credit$PredProb, ties.method="random")
+obs <- nrow (train_credit)
+train_credit$Group <- ceiling (as.numeric(train_credit$Rank) * 10/obs)
+
+write.csv (train_credit, "Training Output/Credit_train.csv")
+
+#Deciling Calculation in Excel
+
+Predicitions for Final Credit Card Holders(Final Data)
+final$PredProb <- predict (model, final, type="response")
+final$Rank <- rank (-final$PredProb, ties.method="random")
+obs <- nrow (final)
+
+final$Group <- ceiling (as.numeric(final$Rank) * 10/obs)
+write.csv (final, "Final Output/Credit_final.csv")
+#Credit Modeling End
