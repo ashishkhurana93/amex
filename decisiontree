@@ -1,0 +1,123 @@
+#Setting Working Directory
+setwd ("C:/Users/ASHISH/Documents/IIFT Trimester-4/Amex/Final")
+
+#Loading Dataset
+train <- read.csv ("Training_Dataset.csv")
+test <- read.csv ("Leaderboard_Dataset.csv")
+final <- read.csv ("Final_Dataset.csv")
+
+#Checking Dimension and Other Feature of Train Data
+names (train)
+nrow (train)
+ncol (train)
+head (train)
+tail (train)
+
+
+#Installing Packages
+install.packages("rpart")
+library(rpart)
+install.packages('rattle')
+install.packages('rpart.plot')
+install.packages('RColorBrewer')
+library(rattle)
+library(rpart.plot)
+library(RColorBrewer)
+
+
+#Confusion Matrix Library
+install.packages("caret")
+library(caret) 
+install.packages('e1071', dependencies=TRUE)
+
+#Splitting Data into Supplementary,Elite and Credit
+
+train_supp<-train[train$mvar46==1,]
+train_elite<-train[train$mvar47==1,]
+train_credit<-train[train$mvar48==1,]
+
+#Modeling for Training Supplementary Dataset
+train_supp$Accept<-train_supp$mvar49
+train_supp$Accept<-as.factor (train_supp$Accept)
+summary (as.factor (train_supp$Accept))
+str(train_supp)
+
+
+fit <- rpart(Accept ~ mvar2+mvar3+mvar4+mvar5+mvar6+mvar7+mvar8+mvar9+mvar10+mvar11+mvar12+mvar13+mvar14+mvar15+mvar16+mvar17+mvar18+mvar19+mvar20+mvar21+mvar22+mvar23+mvar24+mvar25+mvar26+mvar27+mvar28+mvar29+mvar30+mvar31+mvar32+mvar33+mvar34+mvar35+mvar36+mvar37+mvar38+mvar39,
+             data=train_supp,
+             method="class",control =rpart.control(minsplit = 200,minbucket=200/3, cp=0))
+fancyRpartPlot(fit)
+
+#Train
+Prediction <- predict(fit, train_supp, type = "class")
+confusionMatrix( train_supp$Accept,Prediction)
+
+#Test
+Prediction <- predict(fit, test, type = "class")
+submit <- data.frame(PassengerId = test$cm_key, Accept = Prediction)
+write.csv(submit, file = "D-tree Test/myfirstdtree_Supp_test.csv", row.names = FALSE)
+
+#Final
+Prediction <- predict(fit, final, type = "class")
+submit <- data.frame(PassengerId = final$cm_key, Accept = Prediction)
+write.csv(submit, file = "D-tree Final/myfirstdtree_Supp_final.csv", row.names = FALSE)
+
+#Modelling for Supp End
+
+#Modeling for Training Elite Dataset
+train_elite$Accept<-train_elite$mvar50
+train_elite$Accept<-as.factor (train_elite$Accept)
+summary (as.factor (train_elite$Accept))
+str(train_elite)
+
+
+fit <- rpart(Accept ~ mvar2+mvar3+mvar4+mvar5+mvar6+mvar7+mvar8+mvar9+mvar10+mvar11+mvar12+mvar13+mvar14+mvar15+mvar16+mvar17+mvar18+mvar19+mvar20+mvar21+mvar22+mvar23+mvar24+mvar25+mvar26+mvar27+mvar28+mvar29+mvar30+mvar31+mvar32+mvar33+mvar34+mvar35+mvar36+mvar37+mvar38+mvar39,
+             data=train_elite,
+             method="class",control =rpart.control(minsplit = 200,minbucket=200/3, cp=0))
+fancyRpartPlot(fit)
+
+#Train
+Prediction <- predict(fit, train_elite, type = "class")
+confusionMatrix( train_elite$Accept,Prediction)
+
+
+#Test
+Prediction <- predict(fit, test, type = "class")
+submit <- data.frame(PassengerId = test$cm_key, Accept = Prediction)
+write.csv(submit, file = "D-tree Test/myfirstdtree_Elite_test.csv", row.names = FALSE)
+
+#Final
+Prediction <- predict(fit, final, type = "class")
+submit <- data.frame(PassengerId = final$cm_key, Accept = Prediction)
+write.csv(submit, file = "D-tree Final/myfirstdtree_Elite_final.csv", row.names = FALSE)
+
+#Modelling for Elite End
+
+
+#Modeling for Training Credit Dataset
+train_credit$Accept<-train_credit$mvar51
+train_credit$Accept<-as.factor (train_credit$Accept)
+summary (as.factor (train_credit$Accept))
+str(train_credit)
+
+
+fit <- rpart(Accept ~ mvar2+mvar3+mvar4+mvar5+mvar6+mvar7+mvar8+mvar9+mvar10+mvar11+mvar12+mvar13+mvar14+mvar15+mvar16+mvar17+mvar18+mvar19+mvar20+mvar21+mvar22+mvar23+mvar24+mvar25+mvar26+mvar27+mvar28+mvar29+mvar30+mvar31+mvar32+mvar33+mvar34+mvar35+mvar36+mvar37+mvar38+mvar39,
+             data=train_credit,
+             method="class",control =rpart.control(minsplit = 200,minbucket=200/3, cp=0))
+fancyRpartPlot(fit)
+
+#Train
+Prediction <- predict(fit, train_credit, type = "class")
+confusionMatrix( train_credit$Accept,Prediction)
+
+#Test
+Prediction <- predict(fit, test, type = "class")
+submit <- data.frame(PassengerId = test$cm_key, Accept = Prediction)
+write.csv(submit, file = "D-tree Test/myfirstdtree_Credit_test.csv", row.names = FALSE)
+
+#Final
+Prediction <- predict(fit, final, type = "class")
+submit <- data.frame(PassengerId = final$cm_key, Accept = Prediction)
+write.csv(submit, file = "D-tree Final/myfirstdtree_Credit_final.csv", row.names = FALSE)
+
+#Modelling for Credit End
